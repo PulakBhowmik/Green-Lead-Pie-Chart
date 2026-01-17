@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Energy Chart</title>
+
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <h2>Electricity Generation Mix</h2>
+
+  <div class="container">
+    <!-- Chart -->
+    <div class="chart-box">
+      <canvas id="energyChart"></canvas>
+    </div>
+
+    <!-- Table -->
+    <div class="table-box">
+      <table>
+        <tr>
+          <th>Source</th>
+          <th>Percentage</th>
+        </tr>
+        <tr class="data-row"><td>Gas</td><td>55</td></tr>
+        <tr class="data-row"><td>Coal</td><td>30</td></tr>
+        <tr class="data-row"><td>Renewable</td><td>10</td></tr>
+        <tr class="data-row"><td>Others</td><td>5</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Your JS file (ALWAYS at bottom) -->
+  <script src="script.js"></script>
+
+</body>
+</html>
