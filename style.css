@@ -1,35 +1,56 @@
 body {
   font-family: Arial, sans-serif;
   margin: 40px;
+  background-color: #f9f9f9;
+}
+
+h2 {
+  color: #333;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
 .container {
   display: flex;
   gap: 40px;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 60px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .chart-box {
   width: 400px;
   height: 400px;
+  flex-shrink: 0;
 }
 
 .table-box table {
   border-collapse: collapse;
+  min-width: 300px;
 }
 
 .table-box th,
 .table-box td {
-  border: 1px solid #333;
-  padding: 8px 12px;
+  border: 1px solid #ddd;
+  padding: 10px 15px;
   text-align: center;
 }
 
 .table-box th {
-  background-color: #f2f2f2;
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
 }
 
-.data-row.active {
+.table-box td {
+  background-color: #f9f9f9;
+}
+
+.data-row.active,
+.bar-data-row.active {
   background-color: #d1e7dd;
   font-weight: bold;
 }
