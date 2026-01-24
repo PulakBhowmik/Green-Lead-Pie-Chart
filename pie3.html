@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Table 3 – Religious Households</title>
+
+  <!-- Styles -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .table-section,
+    .chart-section {
+      flex: 1;
+      min-width: 320px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr.total-row {
+      font-weight: bold;
+      background-color: #e8f5e9;
+    }
+
+    #chartdiv {
+      width: 100%;
+      height: 420px;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <!-- amCharts -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+
+<body>
+
+<h2>Table 3: Religious Households</h2>
+
+<div class="container">
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <table>
+      <thead>
+        <tr>
+          <th>Religion</th>
+          <th>Percentage</th>
+          <th>Households</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hindu Households</td>
+          <td>89.7%</td>
+          <td>26</td>
+        </tr>
+        <tr>
+          <td>Christian Households</td>
+          <td>10.3%</td>
+          <td>3</td>
+        </tr>
+        <tr class="total-row">
+          <td>Total</td>
+          <td>100%</td>
+          <td>29</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-section">
+    <div id="chartdiv"></div>
+  </div>
+
+</div>
+
+<script>
+am5.ready(function () {
+
+  var root = am5.Root.new("chartdiv");
+
+  root.setThemes([
+    am5themes_Animated.new(root)
+  ]);
+
+  var chart = root.container.children.push(
+    am5percent.PieChart.new(root, {
+      layout: root.verticalLayout
+    })
+  );
+
+  var series = chart.series.push(
+    am5percent.PieSeries.new(root, {
+      valueField: "value",
+      categoryField: "category",
+      fillField: "fill"   // ✅ allows easy color change
+    })
+  );
+    
+  series.slices.template.setAll({
+    stroke: am5.color(0xffffff),
+    strokeWidth: 2,
+    cornerRadius: 6
+  });
+
+  series.slices.template.states.create("hover", {
+    scale: 1.05
+  });
+
+  /* 🔽 CHANGE SLICE COLORS HERE */
+  series.data.setAll([
+    {
+      value: 26,
+      category: "Hindu Households",
+      fill: am5.color(0xE0754C) // change this color anytime
+    },
+    {
+      value: 3,
+      category: "Christian Households",
+      fill: am5.color(0x6663AF) // change this color anytime
+    }
+  ]);
+  
+  var legend = chart.children.push(
+    am5.Legend.new(root, {
+      centerX: am5.percent(50),
+      x: am5.percent(50)
+    })
+  );
+
+  legend.data.setAll(series.dataItems);
+  
+  series.appear(1000, 100);
+
+});
+</script>
+
+</body>
+</html>

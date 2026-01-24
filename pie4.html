@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Household Head Distribution</title>
+
+  <!-- Styles -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    .container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+
+    .table-section,
+    .chart-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #47ee5b;
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f6f8fb;
+    }
+
+    tr.total {
+      font-weight: bold;
+      background-color: #eaf1ff;
+    }
+
+    #chartdiv {
+      width: 100%;
+      height: 500px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 900px) {
+      .container {
+        flex-direction: column;
+      }
+    }
+  </style>
+
+  <!-- amCharts -->
+  <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+  <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+<body>
+
+<h2>Household Head Distribution</h2>
+
+<div class="container">
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Percentage</th>
+          <th>Households</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Male-head Households</td>
+          <td>89.7%</td>
+          <td>26</td>
+        </tr>
+        
+        <tr>
+          <td>Female-head Households</td>
+          <td>10.3%</td>
+          <td>3</td>
+        </tr>
+        
+        <tr class="total">
+          <td>Total</td>
+          <td>100%</td>
+          <td>29</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-section">
+    <div id="chartdiv"></div>
+  </div>
+
+</div>
+
+<script>
+am5.ready(function() {
+
+  var root = am5.Root.new("chartdiv");
+
+  root.setThemes([am5themes_Animated.new(root)]);
+
+  // Pie chart
+  var chart = root.container.children.push(
+    am5percent.PieChart.new(root, {
+      radius: am5.percent(90),
+      innerRadius: am5.percent(50),
+      layout: root.verticalLayout
+    })
+  );
+
+  var series = chart.series.push(
+    am5percent.PieSeries.new(root, {
+      valueField: "value",
+      categoryField: "category",
+      fillField: "fill"
+    })
+  );
+
+  series.slices.template.setAll({
+    strokeOpacity: 0,
+    fillGradient: am5.RadialGradient.new(root, {
+      stops: [
+        { brighten: -0.8 },
+        { brighten: -0.8 },
+        { brighten: -0.5 },
+        { brighten: 0 },
+        { brighten: -0.5 }
+      ]
+    })
+  });
+
+  // Disable slice labels & ticks
+  series.labels.template.set("visible", false);
+  series.ticks.template.set("visible", false);
+
+  // DATA + COLORS (change colors here 👇)
+  series.data.setAll([
+    { category: "Female-head Households", value: 3, fill: am5.color(0xA8369A) },
+    { category: "Male-head Households", value: 26, fill: am5.color(0x4D78C0) }
+  ]);
+
+  // Legend at bottom
+  var legend = chart.children.push(
+    am5.Legend.new(root, {
+      centerX: am5.percent(50),
+      x: am5.percent(50),
+      layout: root.horizontalLayout,
+      marginTop: 15
+    })
+  );
+
+  legend.valueLabels.template.setAll({ textAlign: "right" });
+  legend.labels.template.setAll({ maxWidth: 140, width: 140, oversizedBehavior: "wrap" });
+
+  legend.data.setAll(series.dataItems);
+
+  // Animate
+  series.appear(1000, 100);
+
+});
+</script>
+
+</body>
+</html>

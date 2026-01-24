@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Household Vulnerability Levels</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+.container {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.table-section,
+.chart-section {
+  flex: 1;
+  min-width: 300px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f6f8fb;
+}
+
+tr.total {
+  font-weight: bold;
+  background-color: #e4f6e7;
+}
+
+#chartdiv {
+  width: 100%;
+  height: 500px;
+}
+
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+}
+</style>
+
+<!-- amCharts -->
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+</head>
+<body>
+
+<h2>Household Vulnerability Levels</h2>
+
+<div class="container">
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <table>
+      <thead>
+        <tr>
+          <th>Vulnerability Level</th>
+          <th>Percentage</th>
+          <th>Households</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>High</td>
+          <td>14%</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td>Medium</td>
+          <td>62%</td>
+          <td>18</td>
+        </tr>
+        <tr>
+          <td>Low</td>
+          <td>24%</td>
+          <td>7</td>
+        </tr>
+        <tr class="total">
+          <td>Total</td>
+          <td>100%</td>
+          <td>29</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-section">
+    <div id="chartdiv"></div>
+  </div>
+
+</div>
+
+<script>
+am5.ready(function() {
+
+  var root = am5.Root.new("chartdiv");
+  root.setThemes([am5themes_Animated.new(root)]);
+
+  var chart = root.container.children.push(
+    am5percent.PieChart.new(root, {
+      layout: root.verticalLayout
+    })
+  );
+
+  var series = chart.series.push(
+    am5percent.PieSeries.new(root, {
+      alignLabels: true,
+      calculateAggregates: true,
+      valueField: "value",
+      categoryField: "category",
+      fillField: "fill"
+    })
+  );
+
+  series.slices.template.setAll({
+    strokeWidth: 3,
+    stroke: am5.color(0xffffff)
+  });
+
+  series.labelsContainer.set("paddingTop", 30);
+
+  // Variable radius
+  series.slices.template.adapters.add("radius", function(radius, target) {
+    var dataItem = target.dataItem;
+    var high = series.getPrivate("valueHigh");
+    if (dataItem) {
+      var value = dataItem.get("valueWorking", 0);
+      return radius * value / high;
+    }
+    return radius;
+  });
+
+  // DATA + COLORS
+  series.data.setAll([
+    { category: "High", value: 4, fill: am5.color(0xD42433) },    // red-ish
+    { category: "Medium", value: 18, fill: am5.color(0xEDED2F) }, // yellow-ish
+    { category: "Low", value: 7, fill: am5.color(0x45D424) }      // blue-ish
+  ]);
+
+  // Hide slice labels and ticks
+  series.labels.template.set("visible", false);
+  series.ticks.template.set("visible", false);
+
+  // LEGEND FIX
+  var legendContainer = chart.children.push(am5.Container.new(root, {
+    width: am5.percent(100),
+    layout: root.horizontalLayout,
+    paddingTop: 15,
+    centerX: am5.percent(50),
+    x: am5.percent(50)
+  }));
+
+  var legend = legendContainer.children.push(
+    am5.Legend.new(root, {
+      layout: root.horizontalLayout,
+      width: am5.percent(100)
+    })
+  );
+
+  legend.labels.template.setAll({
+    maxWidth: 100,
+    oversizedBehavior: "wrap",
+    textAlign: "center"
+  });
+
+  legend.valueLabels.template.setAll({
+    textAlign: "right"
+  });
+
+  legend.data.setAll(series.dataItems);
+
+  // Animate
+  series.appear(1000, 100);
+
+});
+</script>
+
+</body>
+</html>
